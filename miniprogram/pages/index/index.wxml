@@ -1,2 +1,20 @@
-<!--miniprogram/pages/index/index.wxml-->
-<text>miniprogram/pages/index/index.wxml</text>
+<view style="display:flex;  flex-direction:column;">
+    <navigator url="../fruits/fruits" style="display:flex; flex-direction:column; border: 0px solid red; align-items: center;">
+      <image src="cloud://cloud1-8g13piij1a7c00df.636c-cloud1-8g13piij1a7c00df-1309465151/images/fruits.svg" mode="aspectFit" style="border: 0px solid; height:80px; width:80px;" >
+      </image>
+
+      <view style="border: 0px solid; text-align: center;"> 数学思维
+      </view>
+    </navigator>
+
+
+    <navigator url="../animals/animals" style="display:flex; flex-direction:column; border: 0px solid red; align-items: center;">
+      <image src="cloud://cloud1-8g13piij1a7c00df.636c-cloud1-8g13piij1a7c00df-1309465151/images/cock.svg" mode="aspectFit" style="border: 0px solid; height:80px; width:80px;" >
+      </image>
+
+      <view style="border: 0px solid; text-align: center;"> 语文表达
+      </view>
+    </navigator>
+
+</view>
+
