@@ -31,7 +31,7 @@ App({
     }
 
     //
-    this.initBaiduYuyinAccessToken();
+    // this.initBaiduYuyinAccessToken();
   },
 
   //初始化语音识别 baiduAccessToken

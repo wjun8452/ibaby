@@ -12,6 +12,9 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    wx.showLoading({
+      title: '正在加载...',
+    })
     wx.cloud.downloadFile({
       fileID: 'cloud://cloud1-8g13piij1a7c00df.636c-cloud1-8g13piij1a7c00df-1309465151/app/app.json',
       success: res => {
@@ -33,6 +36,9 @@ Page({
           }
         }
         wx.setStorageSync(getApp().globalData.cacheKey, getApp().globalData)
+        wx.hideLoading({
+          success: (res) => {},
+        })
         //console.log("unlocked", getApp().globalData.unlocked)
       },
       fail: err => {
