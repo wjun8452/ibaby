@@ -1,73 +1,58 @@
-<view style="box-sizing:border-box; overflow: hidden;width:{{height}}px; height:{{width}}px; position: absolute; left: {{(width-height)/2}}px; top: {{(height-width)/2}}px; transform:rotate(-90deg); display:flex;flex-direction:column;border:0px solid;align-items:stretch;" catchtouchmove='stopPageScroll'>
+<view style="box-sizing:border-box; overflow: hidden;width:{{height}}px; height:{{width}}px; position: absolute; left: {{(width-height)/2}}px; top: {{(height-width)/2}}px; transform:rotate(90deg); display:flex;flex-direction:column;border:0px solid;align-items:stretch;" catchtouchmove='stopPageScroll'>
 
-  <view style="z-index:-1; display:flex;flex-direction:row; justify-content: space-around; align-items:center; border:0px solid red; height:45px; padding-left: 5px; " >
+  <view style="z-index:-1; display:flex;flex-direction:row; justify-content: space-between; align-items:center; border:0px solid red; height:55px; padding-left: 5px; margin-top: 5px;" >
 
     <view style="display:flex; flex-direction:row; width:50%">
-      <block wx:for="{{max_harvest}}" wx:for-item="idx">
-            <block wx:if="{{idx < harvest}}">
-              <image src="cloud://cloud1-8g13piij1a7c00df.636c-cloud1-8g13piij1a7c00df-1309465151/images/{{name}}.svg" mode="aspectFit" style="height:40px; width:40px; border:1px solid lightgray; border-radius:3px; margin: 1px;"> </image>
-            </block>
-
-            <block wx:if="{{idx >= harvest}}">
-              <view style="height:40px; width:40px; border:1px solid lightgray; border-radius:3px; margin: 1px;"> </view>
-            </block>
+      <block wx:for="{{app.series[series_idx].rounds[round_idx].target_count}}" wx:for-item="idx" wx:key="*this">
+            <view style="height:50px; width:50px; border:1px solid lightgray; border-radius:3px; margin: 1px;"> 
+              <block wx:if="{{idx < harvest}}">
+                <image src="{{app.series[series_idx].rounds[round_idx].round_pic_id}}" mode="aspectFit" style="height:100%; width:100%;"> </image>
+              </block>
+            </view> 
       </block>
     </view>
 
       <!-- 按钮 -->
-      <view style="display:flex; flex-direction:row; border:0px solid black; height: 40px; width:50%">
+      <view style="display:flex; flex-direction:row; justify-content: flex-end; border:0px solid black; height: 50px; width:100%; margin-left: 5px; margin-right: 5px;">
         <block wx:if="{{state==0}}">
-          <button bindtap="onShowAnswer"> 看答案 </button>
+          <!-- <view class='item' catch:touchstart="handleTouchStart" catch:touchend="handleTouchEnd">
+              <image src="cloud://cloud1-8g13piij1a7c00df.636c-cloud1-8g13piij1a7c00df-1309465151/images/mic.svg" mode="aspectFit" style="height:50px; width:50px;"> </image>
+              <text>{{user_answer}}</text>
+          </view> -->
+          <button style="width:100%" bindtap="onShowAnswer"> 看答案 </button>
         </block>
 
         <block wx:if="{{state==1}}">
-            <button bindtap="onResult" data-correct="true"> 答对了 </button>
-            <button bindtap="onResult" data-correct="false"> 答错了 </button>
+            <button type="warn" style="width:100%" bindtap="onResult" data-correct="false"> 答错了 </button>
+            <button type="primary" style="width:100%; margin-left: 5px;" bindtap="onResult" data-correct="true"> 答对了 </button>
         </block>
         
         <block wx:if="{{state==2}}">
-          <button bindtap="onNextQuestion"> 下一题 </button>
+          <button style="width:100%" bindtap="onNextQuestion"> 下一题 </button>
         </block>
 
         <block wx:if="{{state==3}}">
-          <button bindtap="onNextLevel"> 闯关成功，下一关卡 </button>
+          <button type="primary" style="width:100%" bindtap="onNextLevel"> 闯关成功，下一关卡 </button>
         </block>
 
         <block wx:if="{{state==4}}">
-          <button bindtap="onReset"> 闯关失败，重试？ </button>
+          <button type="warn" style="width:100%" bindtap="onReset"> 闯关失败，重试？ </button>
         </block>
       </view>
   </view>
 
-  <block wx:if="{{state==2}}">
-      <!-- 新手指引　-->
-      <view style="opacity:0; border:0px solid green; position:fixed; left: {{height/3}}px; top: {{width*2/3}}px; z-index: -2; display:flex;flex-direction:row;" id="fresh_guide">
-          <!-- <view class="single_touch" style="width:100px; height:100px; border:0px solid red">
-          </view> -->
-          <text style="text-align:center; color:#FF9900">滑动改变分数</text>
-      </view>
-  </block>
-
   <view style="z-index:-1; display:flex;flex-direction:column; border:0px solid blue; height:{{width-60-5}}px; line-height:{{width-60-5}}px" id="score_board">
-    <block wx:if="{{state==0}}">
-      <block wx:if="{{(width-60-5)/1.6*8>height}}"> <!-- 字体长宽比越为1.6:1, 如果屏幕高度是短板，则以高度来设置字体大小，实测下来模拟器几种屏幕都是这种情况 !-->
-        <text style="color:RED; font-weight:bold; font-size: {{height/8*1.6}}px; text-align:center; border:0px solid blue;padding:0; ">{{num1}}{{plus_flag? "+" : "-" }}{{num2}}=?</text>
+      <block wx:if="{{state==0}}">
+        <text style="color:RED; font-weight:bold; font-size: {{question_font_size}}px; text-align:center; border:0px solid blue;padding:0; ">{{question.body}}</text>
       </block>
-
-      <block wx:if="{{(width-60-5)/1.6*8<=height}}"> <!-- 如果屏幕宽度是短板，则以宽度来设置字体大小 !-->
-          <text style="color:RED; font-weight:bold; font-size: {{width-60-5}}px; text-align:center; border:0px solid;padding:0; ">{{num1}}{{plus_flag? "+" : "-" }}{{num2}}=?</text>
-      </block>
-    </block>
 
     <block wx:if="{{state==1 || state==2}}">
-      <block wx:if="{{(width-60-5)/1.6*8>height}}"> <!-- 字体长宽比越为1.6:1, 如果屏幕高度是短板，则以高度来设置字体大小，实测下来模拟器几种屏幕都是这种情况 !-->
-        <text style="color:RED; font-weight:bold; font-size: {{height/8*1.6}}px; text-align:center; border:0px solid blue;padding:0; ">{{num1}}{{plus_flag? "+" : "-" }}{{num2}}={{ref_answer}}</text>
-      </block>
-
-      <block wx:if="{{(width-60-5)/1.6*8<=height}}"> <!-- 如果屏幕宽度是短板，则以宽度来设置字体大小 !-->
-          <text style="color:RED; font-weight:bold; font-size: {{width-60-5}}px; text-align:center; border:0px solid;padding:0; ">{{num1}}{{plus_flag? "+" : "-" }}{{num2}}={{ref_answer}}</text>
-      </block>
+        <text style="color:RED; font-weight:bold; font-size: {{answer_font_size}}px; text-align:center; border:0px solid blue;padding:0; ">{{question.answer}}</text>
     </block>
+
+    <block wx:if="{{state==3}}">
+        <text style="color:RED; font-weight:bold; font-size: {{height/8*1.6}}px; text-align:center; border:0px solid blue;padding:0; ">你真棒！</text>
+      </block>
   </view>
 
 </view>

@@ -5,22 +5,27 @@ Page({
    * 页面的初始数据
    */
   data: {
-    level : 0, // 0-10以内, 1-20以内， 2-100以内， 3-100以内巧算
-    fruits: ["banana", "apple", "waterm"],
-    labels: ["10以内加减法", "20以内加减法", "100以内加减法"],
+    app: getApp().globalData.app,
+    series_idx: 0, //系列
+    unlocked_round: 0, //解锁了那一关？
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    if (options.level != null && options.level != undefined) {
-      this.data.level = options.level
-    } else {
+    if (options.unlocked_round != null && options.unlocked_round != undefined) {
+      this.data.unlocked_round = parseInt(options.unlocked_round)
+    } 
 
-    }
-    console.log(options)
+    if (options.series_idx != null && options.series_idx != undefined) {
+      this.data.series_idx = parseInt(options.series_idx)
+    } 
+    
+    this.data.app = Object.assign(this.data.app, getApp().globalData.app)
+    this.data.unlocked_round = getApp().globalData.unlocked[this.data.app.series[this.data.series_idx].name]
     this.setData(this.data)
+    console.log(this.data)
   },
 
   /**

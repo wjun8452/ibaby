@@ -1,20 +1,13 @@
 <view style="display:flex;  flex-direction:column;">
-    <navigator url="../fruits/fruits" style="display:flex; flex-direction:column; border: 0px solid red; align-items: center;">
-      <image src="cloud://cloud1-8g13piij1a7c00df.636c-cloud1-8g13piij1a7c00df-1309465151/images/fruits.svg" mode="aspectFit" style="border: 0px solid; height:80px; width:80px;" >
-      </image>
-
-      <view style="border: 0px solid; text-align: center;"> 数学思维
-      </view>
-    </navigator>
-
-
-    <navigator url="../animals/animals" style="display:flex; flex-direction:column; border: 0px solid red; align-items: center;">
-      <image src="cloud://cloud1-8g13piij1a7c00df.636c-cloud1-8g13piij1a7c00df-1309465151/images/cock.svg" mode="aspectFit" style="border: 0px solid; height:80px; width:80px;" >
-      </image>
-
-      <view style="border: 0px solid; text-align: center;"> 语文表达
-      </view>
-    </navigator>
-
+  <block wx:for="{{app.series}}" wx:key="*this" wx:for-item="series" wx:for-index="idx">
+    <view style="margin-top:5px">
+      <navigator url="../fruits/fruits?series_idx={{idx}}&unlocked_round={{unlocked[series.name]}}" style="display:flex; flex-direction:column; border: 0px solid red; align-items: center;">
+        <image src="{{series.series_pic_id}}" mode="aspectFit" style="border: 0px solid; height:80px; width:80px;" >
+        </image>
+        <view style="border: 0px solid; text-align: center;"> {{series.name}}
+        </view>
+      </navigator>
+    </view>
+  </block>
 </view>
 

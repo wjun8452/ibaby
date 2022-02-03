@@ -1,24 +1,23 @@
 <view style="display:flex;  flex-direction:column;">
+  <block wx:for="{{app.series[series_idx].rounds}}" wx:key="*this" wx:for-item="round" wx:for-index="round_idx">
+    <view style="margin-top:5px">
+      <block wx:if="{{unlocked_round >= round_idx}}">
+        <navigator url="../fruit/fruit?series_idx={{series_idx}}&round_idx={{round_idx}}" style="display:flex; flex-direction:column; align-items: center; border: 0px solid;">
+            <image src="{{app.series[series_idx].rounds[round_idx].round_pic_id}}" mode="aspectFit" style="height:80px; width:80px;"> </image>
+            
+            <text style="text-align:center;"> {{app.series[series_idx].rounds[round_idx].name}}
+            </text>
+        </navigator>
+      </block>
 
-<block wx:for="{{fruits}}" wx:key="*this" wx:for-item="fruit" wx:for-index="idx">
-  <block wx:if="{{idx <= level}}"> 
-    <navigator url="../fruit/fruit?level={{idx}}&name={{fruits[idx]}}" style="display:flex; flex-direction:column; align-items: center; border: 0px solid;">
-      <image src="cloud://cloud1-8g13piij1a7c00df.636c-cloud1-8g13piij1a7c00df-1309465151/images/{{fruit}}.svg" mode="aspectFit" style="height:80px; width:80px;">
-      </image>
-      <text style="text-align:center;"> {{labels[idx]}}
-      </text>
-    </navigator>
+      <block wx:if="{{unlocked_round < round_idx}}">
+        <navigator style="display:flex; flex-direction:column; align-items: center; border: 0px solid;">
+            <image src="cloud://cloud1-8g13piij1a7c00df.636c-cloud1-8g13piij1a7c00df-1309465151/images/lock.svg" mode="aspectFit" style="height:80px; width:80px;">
+            </image>
+            <text style="text-align:center;"> {{app.series[series_idx].rounds[round_idx].name}}
+          </text>
+        </navigator>
+      </block> 
+    </view>
   </block>
-
-  <block wx:if="{{idx > level}}"> 
-    <navigator url="" style="display:flex; flex-direction:column; align-items: center; border: 0px solid;">
-      <image src="cloud://cloud1-8g13piij1a7c00df.636c-cloud1-8g13piij1a7c00df-1309465151/images/{{fruit}}.svg" mode="aspectFit" style="border: 0px solid; height:80px; width:80px;">
-      </image>
-      <text style="text-align:center;"> {{labels[idx]}}
-      </text>
-    </navigator>
-  </block>
-
-</block>
-
 </view>
