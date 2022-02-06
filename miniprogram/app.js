@@ -1,6 +1,7 @@
 App({
   globalData:{
     app: {},
+    favorites: [],
     env: 'cloud1-8g13piij1a7c00df',
     cacheKey: "key0",
     unlocked: {},

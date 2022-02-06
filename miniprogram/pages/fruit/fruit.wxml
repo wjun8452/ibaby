@@ -3,9 +3,9 @@
   <view style="z-index:-1; display:flex;flex-direction:row; justify-content: space-between; align-items:center; border:0px solid red; height:55px; padding-left: 5px; margin-top: 5px;" >
 
     <view style="display:flex; flex-direction:row; width:50%">
-      <block wx:for="{{app.series[series_idx].rounds[round_idx].target_count}}" wx:for-item="idx" wx:key="*this">
+      <block wx:for="{{question_count}}" wx:for-item="idx" wx:key="*this">
             <view style="height:50px; width:50px; border:1px solid lightgray; border-radius:3px; margin: 1px;"> 
-              <block wx:if="{{idx < harvest}}">
+              <block wx:if="{{harvest > idx}}">
                 <image src="{{app.series[series_idx].rounds[round_idx].round_pic_id}}" mode="aspectFit" style="height:100%; width:100%;"> </image>
               </block>
             </view> 
@@ -19,6 +19,13 @@
               <image src="cloud://cloud1-8g13piij1a7c00df.636c-cloud1-8g13piij1a7c00df-1309465151/images/mic.svg" mode="aspectFit" style="height:50px; width:50px;"> </image>
               <text>{{user_answer}}</text>
           </view> -->
+          <block wx:if="{{favorite_idx != -1}}">
+            <button style="width:100%" bindtap="removeFavorite"> 不收藏☆ </button>
+          </block>
+
+         <block wx:if="{{favorite_idx == -1}}">
+            <button style="width:100%" bindtap="addFavorite"> 收藏⭐️ </button>
+          </block>
           <button style="width:100%" bindtap="onShowAnswer"> 看答案 </button>
         </block>
 

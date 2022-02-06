@@ -15,6 +15,8 @@ Page({
     question: {}, // 当前的题目
     questions: [], //当前关卡所有的题目
     correct: true, //答对了吗？
+    question_idx: 0, //可来自option,自动递增更新
+    question_count: 0, //从questions_idx开始，显示几道题目，可以通过options指定，默认等于app配置中的target_count
     //状态
     state: 0, //0-显示题面， 1-显示答案， 2-奖励和鼓励的动画, 3-闯关成功的画面, 4-闯关失败
     //屏幕
@@ -23,6 +25,7 @@ Page({
     user_answer: "",
     question_font_size: 0,
     answer_font_size: 0,
+    favorite_idx: -1, //在globalData.favorites中的index，-1表示本题目未被收藏，否则表示收藏过
   },
 
   /**
@@ -45,8 +48,18 @@ Page({
       this.data.round_idx = parseInt(options.round_idx)
     } 
 
+    if (options.question_idx != null && options.question_idx != undefined) {
+      this.data.question_idx = parseInt(options.question_idx)
+    } 
+
     this.data.app = Object.assign(this.data.app, getApp().globalData.app)
 
+    if (options.question_count != null && options.question_count != undefined) {
+      this.data.question_count = parseInt(options.question_count)
+    } else {
+      this.data.question_count = this.data.app.series[this.data.series_idx].rounds[this.data.round_idx].target_count
+    }
+    
     console.log(this.data)
 
     this.onReset();
@@ -112,6 +125,9 @@ Page({
 
     if (source == "from_database_by_category") {
       if (this.data.questions.length == 0) { //第一次，去数据库取
+        wx.showLoading({
+          title: '正在加载...',
+        })
         var question_series = this.data.app.series[this.data.series_idx].rounds[this.data.round_idx].question_series
         var question_name = this.data.app.series[this.data.series_idx].rounds[this.data.round_idx].name
 
@@ -123,18 +139,24 @@ Page({
             console.log("[db.questions.get]", res)
             var data = res.data
             that.data.questions = Object.assign(that.data.questions, data)
-            that.data.question = that.data.questions[that.data.harvest]
+            that.data.question = that.data.questions[that.data.question_idx]
             that.data.question_font_size = that.calculate_font_size(that.data.height, that.data.question.body.length)
             that.data.answer_font_size = that.calculate_font_size(that.data.height, that.data.question.answer.length)
             that.setData(that.data)
             console.log(that.data)
+            wx.hideLoading({
+              success: (res) => {},
+            })
           },
           fail(res) {
+            wx.hideLoading({
+              success: (res) => {},
+            })
             console.log("[db.questions.get]", id, res)
           }
         })
       } else {
-        this.data.question = this.data.questions[this.data.harvest]
+        this.data.question = this.data.questions[this.data.question_idx]
         this.data.question_font_size = this.calculate_font_size(this.data.height, this.data.question.body.length)
         this.data.answer_font_size = this.calculate_font_size(this.data.height, this.data.question.answer.length)
         this.setData(this.data)
@@ -142,7 +164,11 @@ Page({
     }
 
     if (source == "from_database") {
-      var id = this.data.app.series[this.data.series_idx].rounds[this.data.round_idx].question_ids[this.data.harvest]
+      wx.showLoading({
+        title: '正在加载',
+      })
+
+      var id = this.data.app.series[this.data.series_idx].rounds[this.data.round_idx].question_ids[this.data.question_idx]
 
       db.collection('questions').where({
         _id: id,
@@ -153,8 +179,14 @@ Page({
           that.data.question = Object.assign(that.data.question, data)
           that.setData(that.data)
           console.log(that.data)
+          wx.hideLoading({
+            success: (res) => {},
+          })
         },
         fail(res) {
+          wx.hideLoading({
+            success: (res) => {},
+          })
           console.log("[db.questions.get]", id, res)
         }
       })
@@ -176,9 +208,10 @@ Page({
       
       if (this.data.correct) {
         this.data.harvest = this.data.harvest + 1
+        this.data.question_idx = this.data.question_idx + 1
       }
-
-      if (this.data.harvest >= this.data.app.series[this.data.series_idx].rounds[this.data.round_idx].target_count) {
+    
+      if (this.data.harvest >= this.data.question_count) {
         this.data.state = 3
       }  else {
         this.data.state = 2
@@ -190,105 +223,31 @@ Page({
   onNextQuestion: function() {
     this.data.state = 0
     this.generateQuestion()
+    this.updateIsFavorite()
     this.setData(this.data)
   },
 
   onNextLevel: function() {
-    //为减少栈深度，不用navigateTo
-    var series = getApp().globalData.app.series
-    var nextRound = parseInt(this.data.round_idx) + 1
-    if (getApp().globalData.unlocked[series[this.data.series_idx].name] < nextRound) 
-    {
-      getApp().globalData.unlocked[series[this.data.series_idx].name] = nextRound
-      wx.setStorageSync(getApp().globalData.cacheKey, getApp().globalData)
-      console.log("**********",getApp().globalData)
-    }
-    
-    wx.reLaunch({
-      url: '../fruits/fruits?unlocked_round='+nextRound+'&series_idx='+this.data.series_idx,
-    })
+        var series = getApp().globalData.app.series
+        var nextRound = parseInt(this.data.round_idx) + 1
+        if (getApp().globalData.unlocked[series[this.data.series_idx].name] < nextRound) 
+        {
+          getApp().globalData.unlocked[series[this.data.series_idx].name] = nextRound
+          wx.setStorageSync(getApp().globalData.cacheKey, getApp().globalData)
+          console.log("**********",getApp().globalData)
+        }
+
+      wx.navigateBack({
+        delta: 0,
+      })
   },
 
   onReset: function() {
     this.data.harvest = 0
     this.data.state = 0
+    this.updateIsFavorite()
     this.generateQuestion()
     this.setData(this.data)
-  },
-
-  handleTouchStart: function() {
-    console.log("start.....")
-    //录音参数
-    const options = {
-      sampleRate: 16000,
-      numberOfChannels: 1,
-      encodeBitRate: 48000,
-      format: 'PCM'
-    }
-    //开启录音
-    recorderManager.start(options);
-    wx.showLoading({
-      title: '正在识别中...',
-    })
-  },
-
-  handleTouchEnd: function(e) {
-    this.bindRecorderStopEvent()
-    recorderManager.stop();
-  },
-
-  bindRecorderStopEvent: function() {
-    var that = this
-    recorderManager.onStop((res) => {
-      var baiduBccessToken = getApp().globalData.baiduyuyin.baiduAccessToken
-      var tempFilePath = res.tempFilePath;//音频文件地址
-      // var fileSize = res.fileSize;
-      const fs = wx.getFileSystemManager();
-      fs.readFile({//读取文件并转为ArrayBuffer
-        filePath: tempFilePath,
-        success(res) {
-          const base64 = wx.arrayBufferToBase64(res.data);
-          var fileSize = res.data.byteLength;
-          wx.request({
-            url: 'https://vop.baidu.com/server_api',
-            data: {
-              format: 'pcm',
-              rate: 16000,
-              channel: 1,
-              cuid: 'sdfdfdfsfs',
-              token: baiduBccessToken,
-              speech: base64,
-              len: fileSize
-            },
-            method: 'POST',
-            header: {
-              'content-type': 'application/json' // 默认值
-            },
-            success(res) {
-              wx.hideLoading();
-              console.log(res);
-              var result = res.data.result;
-              if (result.length == 0){
-                wx.showToast({
-                  title: "未识别到语音信息!",
-                  icon: 'none',
-                  duration: 3000
-                })
-                return ;
-              } else {
-                var keyword = result[0];
-                var keyword = keyword.replace("。", "");
-                that.data.user_answer = keyword
-                if (that.data.question.answer_voice == keyword) {
-                    that.onResult1(true)
-                }
-                that.setData(that.data)
-              }
-            }
-          })
-        }
-      })
-    })
   },
 
   calculate_font_size: function(screen_height, text_length) {
@@ -297,6 +256,44 @@ Page({
     } else {
       return screen_height/parseFloat(text_length)*1.6
     }
+  },
+
+  updateIsFavorite: function() {
+      this.data.favorite_idx = -1
+      var favorites = getApp().globalData.favorites
+      for(var index in favorites) {
+          var favorite = favorites[index]
+          if (favorite.series_idx == this.data.series_idx &&
+            favorite.round_idx == this.data.round_idx &&
+            favorite.question_idx == this.data.question_idx) {
+              this.data.favorite_idx = index
+            }
+      }
+  },
+
+  addFavorite: function() {
+      var favorite = {
+        series_idx : this.data.series_idx,
+        round_idx : this.data.round_idx,
+        question_idx : this.data.question_idx,
+      }
+
+      var favorites = getApp().globalData.favorites
+      favorites.push(favorite)
+
+      wx.setStorageSync(getApp().globalData.cacheKey, getApp().globalData);
+
+      this.data.favorite_idx = this.data.question_idx
+      this.setData(this.data)
+  },
+
+  removeFavorite: function() {
+      var favorites = getApp().globalData.favorites
+      favorites.splice(this.data.favorite_idx, 1)
+      wx.setStorageSync(getApp().globalData.cacheKey, getApp().globalData);
+
+      this.data.favorite_idx = -1
+      this.setData(this.data)
   }
 
 })

@@ -9,5 +9,14 @@
       </navigator>
     </view>
   </block>
+
+  <view style="margin-top:5px">
+      <navigator url="../favorites/favorites" style="display:flex; flex-direction:column; border: 0px solid red; align-items: center;">
+        <image src="../../images/favorites.svg" mode="aspectFit" style="border: 0px solid; height:80px; width:80px;" >
+        </image>
+        <view style="border: 0px solid; text-align: center;"> 收藏夹
+        </view>
+      </navigator>
+    </view>
 </view>
 

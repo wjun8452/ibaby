@@ -1,26 +1,18 @@
-// pages/fruits/fruits.js
+// pages/favorites/favorites.js
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    app: getApp().globalData.app,
-    series_idx: 0, //系列
-    unlocked_round: 0, //解锁了那一关？
+    favorites: [],
+    app: {},
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    if (options.series_idx != null && options.series_idx != undefined) {
-      this.data.series_idx = parseInt(options.series_idx)
-    } 
-    
-    this.data.app = Object.assign(this.data.app, getApp().globalData.app)
-    this.setData(this.data)
-    console.log(this.data)
   },
 
   /**
@@ -34,7 +26,8 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    this.data.unlocked_round = getApp().globalData.unlocked[this.data.app.series[this.data.series_idx].name]
+    this.data.app = Object.assign(this.data.app, getApp().globalData.app)
+    this.data.favorites = getApp().globalData.favorites
     this.setData(this.data)
   },
 
@@ -71,6 +64,5 @@ Page({
    */
   onShareAppMessage: function () {
 
-  },
-
+  }
 })
