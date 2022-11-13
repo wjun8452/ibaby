@@ -6,7 +6,7 @@
       <block wx:for="{{question_count}}" wx:for-item="idx" wx:key="*this">
             <view style="height:50px; width:50px; border:1px solid lightgray; border-radius:3px; margin: 1px;"> 
               <block wx:if="{{harvest > idx}}">
-                <image src="{{app.series[series_idx].rounds[round_idx].round_pic_id}}" mode="aspectFit" style="height:100%; width:100%;"> </image>
+                <image src="{{app.series[series_idx].rounds[round_idx].round_pic_id}}" mode="aspectFit" style="height:100%; width:100%;">  </image>
               </block>
             </view> 
       </block>

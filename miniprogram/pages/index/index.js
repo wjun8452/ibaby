@@ -11,40 +11,45 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
-    wx.showLoading({
+    onLoad: function (options) {
+      console.log("index.onLoad starts")
+      wx.showLoading({
       title: '正在加载...',
     })
-    wx.cloud.downloadFile({
-      fileID: 'cloud://cloud1-8g13piij1a7c00df.636c-cloud1-8g13piij1a7c00df-1309465151/app/app.json',
-      success: res => {
-        // get temp file path
-        console.log(res.tempFilePath)
-        let fs = wx.getFileSystemManager()
-        let result = fs.readFileSync(res.tempFilePath, "utf-8")
-        //console.log(result)
-        this.data.app = JSON.parse(result);
-        //console.log("-----------------")
-        //console.log(this.data.app.name)
-        this.setData(this.data)
-        getApp().globalData.app = this.data.app
 
-        for (var index in this.data.app.series) {
-          var series = this.data.app.series[index]
-          if (!getApp().globalData.unlocked.hasOwnProperty(series.name)) {
-            getApp().globalData.unlocked[series.name] = 0
+    var that = this;
+
+    getApp().getCloud(function(cloud) {
+      cloud.downloadFile({
+        fileID: 'cloud://ilovevolleyball-d1813b.696c-ilovevolleyball-d1813b-1253572757/ibaby/app.json',
+        success: res => {
+          // get temp file path
+          console.log(res)
+          let fs = wx.getFileSystemManager()
+          let result = fs.readFileSync(res.tempFilePath, "utf-8")
+          that.data.app = JSON.parse(result);
+          console.log("-----------------")
+          console.log(that.data.app)
+          that.setData(that.data)
+          getApp().globalData.app = that.data.app
+  
+          for (var index in that.data.app.series) {
+            var series = that.data.app.series[index]
+            if (!getApp().globalData.unlocked.hasOwnProperty(series.name)) {
+              getApp().globalData.unlocked[series.name] = 0
+            }
           }
+          wx.setStorageSync(getApp().cacheKey, getApp().globalData)
+          wx.hideLoading({
+            success: (res) => {},
+          })
+          //console.log("unlocked", getApp().globalData.unlocked)
+        },
+        fail: err => {
+          // handle error
+          console.log(err)
         }
-        wx.setStorageSync(getApp().globalData.cacheKey, getApp().globalData)
-        wx.hideLoading({
-          success: (res) => {},
-        })
-        //console.log("unlocked", getApp().globalData.unlocked)
-      },
-      fail: err => {
-        // handle error
-        console.log(err)
-      }
+      })
     })
   },
 
