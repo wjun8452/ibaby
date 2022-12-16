@@ -35,6 +35,7 @@ Page({
    */
   onShow: function () {
     this.data.unlocked_round = getApp().globalData.unlocked[this.data.app.series[this.data.series_idx].name]
+    this.data.unlocked_round = 12;
     this.setData(this.data)
   },
 

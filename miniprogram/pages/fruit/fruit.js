@@ -139,10 +139,11 @@ Page({
               var data = res.data
               that.data.questions = Object.assign(that.data.questions, data)
               that.data.question = that.data.questions[that.data.question_idx]
-              that.data.question_font_size = that.calculate_font_size(that.data.height, that.data.question.body.length)
-              that.data.answer_font_size = that.calculate_font_size(that.data.height, that.data.question.answer.length)
+              that.data.question_font_size = that.calculate_font_size(that.data.height, that.data.width,that.data.question.body.length)
+              that.data.answer_font_size = that.calculate_font_size(that.data.height, that.data.width, that.data.question.answer.length)
               that.setData(that.data)
               console.log(that.data)
+              console.log(that.data.question_font_size)
               wx.hideLoading({
                 success: (res) => {},
               })
@@ -156,8 +157,9 @@ Page({
           })
         } else {
           that.data.question = that.data.questions[that.data.question_idx]
-          that.data.question_font_size = that.calculate_font_size(that.data.height, that.data.question.body.length)
-          that.data.answer_font_size = that.calculate_font_size(that.data.height, that.data.question.answer.length)
+          that.data.question_font_size = that.calculate_font_size(that.data.height, that.data.width,that.data.question.body.length)
+          that.data.answer_font_size = that.calculate_font_size(that.data.height, that.data.width,that.data.question.answer.length)
+          console.log(that.data.question_font_size)
           that.setData(that.data)
         }
       }
@@ -250,12 +252,10 @@ Page({
     this.setData(this.data)
   },
 
-  calculate_font_size: function (screen_height, text_length) {
-    if (text_length <= 8) {
-      return screen_height / 8.0 * 1.6
-    } else {
-      return screen_height / parseFloat(text_length) * 1.6
-    }
+  // 55是上方bar的高度
+  calculate_font_size: function (screen_height, screen_width, text_length) {
+      var font_size = Math.sqrt(screen_width * (screen_height - 55) / (text_length * 2))
+      return font_size;
   },
 
   updateIsFavorite: function () {

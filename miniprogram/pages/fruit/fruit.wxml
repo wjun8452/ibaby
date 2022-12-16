@@ -48,9 +48,9 @@
       </view>
   </view>
 
-  <view style="z-index:-1; display:flex;flex-direction:column; border:0px solid blue; height:{{width-60-5}}px; line-height:{{width-60-5}}px" id="score_board">
+  <view style="z-index:-1; display:flex;flex-direction:column; border:0px solid blue;" id="score_board">
       <block wx:if="{{state==0}}">
-        <text style="color:RED; font-weight:bold; font-size: {{question_font_size}}px; text-align:center; border:0px solid blue;padding:0; ">{{question.body}}</text>
+        <text style="color:RED; font-weight:bold; text-align:center; border:0px solid blue;padding:0; word-break: break-all; font-size: {{question_font_size}}px;">{{question.body}}</text>
       </block>
 
     <block wx:if="{{state==1 || state==2}}">
