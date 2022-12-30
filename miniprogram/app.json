@@ -1,8 +1,8 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/fruits/fruits",
-    "pages/fruit/fruit",
+    "pages/series/series",
+    "pages/round/round",
     "pages/favorites/favorites"
   ],
   "window": {

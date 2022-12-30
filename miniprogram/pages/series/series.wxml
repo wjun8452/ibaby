@@ -1,9 +1,12 @@
+<wxs module="sharedURL" src="../tools/sharedURL.wxs"></wxs>
+
+
 <view style="display:flex;  flex-direction:column;">
   <block wx:for="{{app.series[series_idx].rounds}}" wx:key="*this" wx:for-item="round" wx:for-index="round_idx">
     <view style="margin-top:5px">
       <block wx:if="{{unlocked_round >= round_idx}}">
-        <navigator url="../fruit/fruit?series_idx={{series_idx}}&round_idx={{round_idx}}" style="display:flex; flex-direction:column; align-items: center; border: 0px solid;">
-            <image src="{{app.series[series_idx].rounds[round_idx].round_pic_id}}" mode="aspectFit" style="height:80px; width:80px;"> </image>
+        <navigator url="../round/round?series_idx={{series_idx}}&round_idx={{round_idx}}" style="display:flex; flex-direction:column; align-items: center; border: 0px solid;">
+            <image src="{{sharedURL.getUrl(app.series[series_idx].rounds[round_idx].round_pic_id)}}" mode="aspectFit" style="height:80px; width:80px;"> </image>
             
             <text style="text-align:center;"> {{app.series[series_idx].rounds[round_idx].name}}
             </text>

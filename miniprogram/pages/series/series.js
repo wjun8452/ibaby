@@ -6,7 +6,7 @@ Page({
    */
   data: {
     app: getApp().globalData.app,
-    series_idx: 0, //系列
+    series_idx: 0, //本系列对应的ID
     unlocked_round: 0, //解锁了那一关？
   },
 
@@ -35,7 +35,7 @@ Page({
    */
   onShow: function () {
     this.data.unlocked_round = getApp().globalData.unlocked[this.data.app.series[this.data.series_idx].name]
-    this.data.unlocked_round = 12;
+    // this.data.unlocked_round = 12;
     this.setData(this.data)
   },
 

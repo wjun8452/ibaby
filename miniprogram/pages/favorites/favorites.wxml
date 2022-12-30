@@ -1,8 +1,10 @@
+<wxs module="sharedURL" src="../tools/sharedURL.wxs"></wxs>
+
 <view style="display:flex;  flex-direction:column;">
   <block wx:for="{{favorites}}" wx:key="*this" wx:for-item="favorite" wx:for-index="idx">
     <view style="margin-top:5px">
-        <navigator url="../fruit/fruit?series_idx={{favorite.series_idx}}&round_idx={{favorite.round_idx}}&question_idx={{favorite.question_idx}}&question_count=1" style="display:flex; flex-direction:column; align-items: center; border: 0px solid;">
-            <image src="{{app.series[favorite.series_idx].rounds[favorite.round_idx].round_pic_id}}" mode="aspectFit" style="height:80px; width:80px;"> </image>
+        <navigator url="../round/round?series_idx={{favorite.series_idx}}&round_idx={{favorite.round_idx}}&question_idx={{favorite.question_idx}}&question_count=1" style="display:flex; flex-direction:column; align-items: center; border: 0px solid;">
+            <image src="{{sharedURL.getUrl(app.series[favorite.series_idx].rounds[favorite.round_idx].round_pic_id)}}" mode="aspectFit" style="height:80px; width:80px;"> </image>
             
             <text style="text-align:center;"> {{app.series[favorite.series_idx].rounds[favorite.round_idx].name}}
             </text>

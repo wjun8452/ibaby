@@ -1,0 +1,10 @@
+module.exports = {
+    getUrl: function (link) {
+      if (link) { } else return ''
+      if (link.substring(0, 5) == 'cloud') { } else return link
+      var arr = link.split('/')
+      arr[0] = 'https:'
+      arr[2] = arr[2].split('.')[1] + '.tcb.qcloud.la'
+      return arr.join('/')
+    }
+  }

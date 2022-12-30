@@ -1,7 +1,7 @@
 <view style="display:flex;  flex-direction:column;">
   <block wx:for="{{app.series}}" wx:key="*this" wx:for-item="series" wx:for-index="idx">
     <view style="margin-top:5px">
-      <navigator url="../fruits/fruits?series_idx={{idx}}&unlocked_round={{unlocked[series.name]}}" style="display:flex; flex-direction:column; border: 0px solid red; align-items: center;">
+      <navigator url="../series/series?series_idx={{idx}}&unlocked_round={{unlocked[series.name]}}" style="display:flex; flex-direction:column; border: 0px solid red; align-items: center;">
         <image src="{{series.series_pic_id}}" mode="aspectFit" style="border: 0px solid; height:80px; width:80px;" >
         </image>
         <view style="border: 0px solid; text-align: center;"> {{series.name}}

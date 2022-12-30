@@ -26,6 +26,8 @@ Page({
     question_font_size: 0,
     answer_font_size: 0,
     favorite_idx: -1, //在globalData.favorites中的index，-1表示本题目未被收藏，否则表示收藏过
+    question_type: 0,  //0文字，1图片
+    answer_type: 0,//0文字，1图片
   },
 
   /**
@@ -139,6 +141,8 @@ Page({
               var data = res.data
               that.data.questions = Object.assign(that.data.questions, data)
               that.data.question = that.data.questions[that.data.question_idx]
+              that.data.question_type = that.data.question.body.substring(0, 5) == 'cloud' ? 1 : 0;
+              that.data.answer_type = that.data.question.answer.substring(0, 5) == 'cloud' ? 1 : 0;
               that.data.question_font_size = that.calculate_font_size(that.data.height, that.data.width,that.data.question.body.length)
               that.data.answer_font_size = that.calculate_font_size(that.data.height, that.data.width, that.data.question.answer.length)
               that.setData(that.data)
@@ -157,6 +161,8 @@ Page({
           })
         } else {
           that.data.question = that.data.questions[that.data.question_idx]
+          that.data.question_type = that.data.question.body.substring(0, 5) == 'cloud' ? 1 : 0;
+          that.data.answer_type = that.data.question.answer.substring(0, 5) == 'cloud' ? 1 : 0;
           that.data.question_font_size = that.calculate_font_size(that.data.height, that.data.width,that.data.question.body.length)
           that.data.answer_font_size = that.calculate_font_size(that.data.height, that.data.width,that.data.question.answer.length)
           console.log(that.data.question_font_size)
@@ -254,7 +260,10 @@ Page({
 
   // 55是上方bar的高度
   calculate_font_size: function (screen_height, screen_width, text_length) {
-      var font_size = Math.sqrt(screen_width * (screen_height - 55) / (text_length * 2))
+      if (text_length == 1) {
+        text_length = 2;
+      }
+      var font_size = Math.sqrt(screen_width * (screen_height - 60) / (text_length * 2.5))
       return font_size;
   },
 
